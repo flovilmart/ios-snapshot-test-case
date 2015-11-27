@@ -1,6 +1,17 @@
 language: objective-c
 osx_image: xcode7
 before_script:
-  - gem install cocoapods -v 0.37.2 --no-ri --no-rdoc
-script:
-  ./build.sh
+- gem install cocoapods -v 0.37.2 --no-ri --no-rdoc
+script: "./build.sh"
+before_deploy:
+- brew install carthage
+- export XCODE_XCCONFIG_FILE=Framework.xcconfig && carthage build --no-skip-current
+- carthage archive FBSnapshotTestCase
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: atOQs2kKX0qEvOKFAjazPm5gptK1PfVevUmjcUez+bFImPwpIREC/KYb3+1pCZzXWzgynWbPYjFZadvW/rak/fDC2SKg7zXShWhnkY0L+dE4DI0f7AsjPXJqHL5hr5Z2zro7qFcVKJZbE9jItVsngGyNS+L51eCbBdEkkxgC5zhpnHEEP/8sMlbRwev090XJirfDkMp7Lxk0EyF9ypcSjQiq77iJ2j6qEcrqc99On5KbYwFSDHRtNtHw2g3XmSfa/V3vUuvRjAWsP2Uilpo9VWRmc0qxyNDMqtjIcqkh3wyQ76so154h+nIcdw2xsRGuxo3zhaOuqxg6Q0S6UuVZUGAFtI9lr/jTJie+HuVd1/03KVvrGnFKLC/zlYBoWF8FGAOol1eA14S0PxrJATMY3Q/Z7A66sIONcyFVswOlzo09XEQKfjFX/9BArWs7Yh2W9cmaT3q6Ssd0nojCPGbFrvgYO0afBXlXpTH5emf0KpLzdxmEWffDqY/ZdjQnyl3gEUaPEXrPCPFkremZGCK/G0x3HQ4QBrYjmUhI8ehdBGziLwPcJecw9hlPoV9EbVlFThvrnYyo3TWtCCLQiXKvxYDHr7NV2t0mGDKRWhj9x4P4rbFlShLXnUiqypky6w/W8MOMyP0nzmJQAHU2uJAlPemeqN4BJSMm536b/qBG3FQ=
+  file: FBSnapshotTestCase.framework.zip
+  on:
+    tags: true
